@@ -1,0 +1,7 @@
+pandas
+pyodbc
+sqlalchemy
+apache-airflow-providers-microsoft-mssql
+apache-airflow-providers-microsoft-mssql[odbc]
+gitpython
+python-dotenv
