@@ -1,0 +1,48 @@
+# Use the official Apache Airflow image as the base image
+FROM apache/airflow:2.10.3
+
+
+# Switch to root user to install system dependencies
+USER root
+
+# Install system dependencies and ODBC Driver for SQL Server
+RUN apt-get update && apt-get install -y \
+    curl \
+    apt-transport-https \
+    gnupg \
+    unixodbc-dev \
+    g++ \
+    gcc \
+    libssl-dev \
+    libpq-dev \
+    build-essential \
+    libffi-dev \
+    libcurl4-openssl-dev \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y msodbcsql17 \
+    && rm -rf /var/lib/apt/lists/*
+
+
+USER airflow    
+
+# Upgrade pip and setuptools
+RUN pip install --upgrade pip setuptools wheel
+    
+COPY ./dags /opt/airflow/dags
+COPY ./plugins /opt/airflow/plugins
+COPY ./config/airflow.cfg /opt/airflow/airflow.cfg
+COPY .env /opt/airflow/.env
+COPY requirements.txt /opt/airflow/requirements.txt
+
+# Set the working directory to Airflow's home directory
+WORKDIR /opt/airflow
+    
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+    
+EXPOSE 8080
+EXPOSE 8793
+EXPOSE 5555
