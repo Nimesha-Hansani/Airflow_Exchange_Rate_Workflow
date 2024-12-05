@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y \
 
 USER airflow    
 
+
 # Upgrade pip and setuptools
 RUN pip install --upgrade pip setuptools wheel
     

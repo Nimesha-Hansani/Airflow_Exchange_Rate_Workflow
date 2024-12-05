@@ -1,0 +1,9 @@
+#Ignore Git File
+*.log
+
+#Ignore Enviroment variable file
+*.env
+
+#Ingnore Config file
+*.cfg
+
